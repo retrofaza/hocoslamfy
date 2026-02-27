@@ -21,8 +21,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 
 #include "main.h"
 #include "init.h"

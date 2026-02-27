@@ -20,12 +20,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
 #include "main.h"
 #include "init.h"
 #include "platform.h"
-#include "SDL_image.h"
+#include <SDL/SDL_image.h>
 
 static bool         Continue                             = true;
 static bool         Error                                = false;
@@ -41,6 +41,7 @@ static bool         Error                                = false;
        TGatherInput GatherInput;
        TDoLogic     DoLogic;
        TOutputFrame OutputFrame;
+
 
 int main(int argc, char* argv[])
 {

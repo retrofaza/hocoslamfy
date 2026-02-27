@@ -23,8 +23,8 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 
 #include "main.h"
 #include "init.h"
@@ -77,7 +77,7 @@ void GameGatherInput(bool* Continue)
 	{
 		if (IsBoostEvent(&ev) && !Pause)
 			Boost = true;
-		else if (IsPauseEvent(&ev) && PlayerStatus == ALIVE)
+		else if (IsPauseEvent(&ev) && PlayerStatus == _ALIVE)
 			Pause = !Pause;
 		else if (IsExitGameEvent(&ev))
 		{
@@ -102,7 +102,7 @@ static void AnimationControl(Uint32 Milliseconds)
 	Uint32 Remainder = Milliseconds;
 	switch (PlayerStatus)
 	{
-		case ALIVE:
+		case _ALIVE:
 		case DYING:
 			// Get rid of all the times the animation could have been fully
 			// completed since the last frame displayed.
@@ -158,7 +158,7 @@ static void AnimationControl(Uint32 Milliseconds)
 
 void GameDoLogic(bool* Continue, bool* Error, Uint32 Milliseconds)
 {
-	if (!Pause && PlayerStatus == ALIVE)
+	if (!Pause && PlayerStatus == _ALIVE)
 	{
 		bool PointAwarded = false;
 		uint32_t Millisecond;
@@ -398,7 +398,7 @@ void GameOutputFrame()
 #endif
 	switch (PlayerStatus)
 	{
-		case ALIVE:
+		case _ALIVE:
 			if (PlayerSpeed > -2.0f) {
 				PlayerSourceRect.x = 32 * PlayerFrame;
 			} else {
@@ -437,7 +437,7 @@ void ToGame(void)
 	Score = 0;
 	Boost = false;
 	Pause = false;
-	SetStatus(ALIVE);
+	SetStatus(_ALIVE);
 	PlayerX = FIELD_WIDTH / 4;
 	PlayerY = FIELD_HEIGHT / 2;
 	PlayerSpeed = 0.0f;

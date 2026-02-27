@@ -114,7 +114,7 @@ struct HocoslamfyRect
 
 enum PlayerStatus
 {
-	ALIVE,
+	_ALIVE,
 	COLLIDED,
 	DYING
 };

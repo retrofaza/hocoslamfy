@@ -20,8 +20,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 
 #include "init.h"
 
@@ -37,10 +37,10 @@ static Mix_Chunk* SFX_HighScore = NULL;
 static Mix_Chunk* LoadSFX(const char* Path)
 {
 	Mix_Chunk* Result = Mix_LoadWAV(Path);
-	if (Result == NULL)
-		printf("%s: Mix_LoadWAV failed: %s\n", Path, Mix_GetError());
+	if (Result == NULL) 	
+		D(bug("%s: Mix_LoadWAV failed: %s\n", Path, Mix_GetError());)
 	else
-		printf("Successfully loaded %s\n", Path);
+		D(bug("Successfully loaded %s\n", Path);)
 	return Result;
 }
 
@@ -48,12 +48,12 @@ bool InitializeAudio()
 {
 	if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2 /* stereo */, 1024 /* buffer size */))
 	{
-		printf("warning: Mix_OpenAudio failed: %s\n", Mix_GetError());
-		printf("Sound will not be available.\n");
+		D(bug("warning: Mix_OpenAudio failed: %s\n", Mix_GetError());)
+		D(bug("Sound will not be available.\n");)
 	}
 	else
 	{
-		printf("Mix_OpenAudio succeeded\n");
+		D(bug("Mix_OpenAudio succeeded\n");)
 		SND_Available = true;
 	}
 
@@ -62,11 +62,11 @@ bool InitializeAudio()
 		BGM = Mix_LoadMUS(DATA_PATH "bgm.wav");
 		if (BGM == NULL)
 		{
-			printf("%s: Mix_LoadMUS failed: %s\n", DATA_PATH "bgm.wav", Mix_GetError());
+			D(bug("%s: Mix_LoadMUS failed: %s\n", DATA_PATH "bgm.wav", Mix_GetError());)
 			return false;
 		}
 		else
-			printf("Successfully loaded %s\n", DATA_PATH "bgm.wav");
+			D(bug("Successfully loaded %s\n", DATA_PATH "bgm.wav");)
 
 		SFX_Fly       = LoadSFX(DATA_PATH "fly.wav");
 		SFX_Pass      = LoadSFX(DATA_PATH "pass.wav");

@@ -21,7 +21,7 @@
 #define _MAIN_H_
 
 #include <stdbool.h>
-#include "SDL.h"
+#include <SDL/SDL.h>
 
 #include "title.h"
 #include "bg.h"

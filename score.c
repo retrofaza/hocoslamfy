@@ -28,7 +28,7 @@
 #include <pwd.h>
 #endif
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
 #include "main.h"
 #include "init.h"
@@ -43,7 +43,7 @@ static bool  WaitingForRelease = false;
 
 static char* ScoreMessage      = NULL;
 
-static const char* SavePath = ".hocoslamfy";
+static const char* SavePath = "data/.hocoslamfy";
 static const char* HighScoreFilePath = "highscore";
 
 void ScoreGatherInput(bool* Continue)
@@ -163,11 +163,11 @@ void ToScore(uint32_t Score, enum GameOverReason GameOverReason, uint32_t HighSc
 
 int MkDir(char *path)
 {
-#ifndef DONT_USE_PWD
+//#ifndef DONT_USE_PWD
 	return mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO);
-#else
-	return mkdir(path);
-#endif
+//#else
+//	return mkdir(path);
+//#endif
 }
 
 void SaveHighScore(uint32_t Score)

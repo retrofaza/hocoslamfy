@@ -22,13 +22,16 @@
 
 #include <stdbool.h>
 
+#define DEBUG 1
+#include <aros/debug.h>
+
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
 
 #ifdef OPK
-#define DATA_PATH "./"
+#define DATA_PATH "/PROGDIR/"
 #else
-#define DATA_PATH "./data/"
+#define DATA_PATH "data/"
 #endif
 
 void Initialize(bool* Continue, bool* Error);

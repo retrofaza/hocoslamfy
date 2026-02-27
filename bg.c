@@ -19,7 +19,7 @@
 
 #include <math.h>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
 #include "main.h"
 #include "init.h"

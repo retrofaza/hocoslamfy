@@ -20,8 +20,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 
 #include "main.h"
 #include "init.h"
@@ -63,12 +63,16 @@ static bool CheckImage(bool* Continue, bool* Error, const SDL_Surface* Image, co
 	if (Image == NULL)
 	{
 		*Continue = false;  *Error = true;
-		printf("%s: LoadImage failed: %s\n", Name, IMG_GetError());
+
+		D(bug("%s: LoadImage failed: %s\n", Name, IMG_GetError());)
+
 		return false;
 	}
 	else
 	{
-		printf("Successfully loaded %s\n", Name);
+
+		D(bug("Successfully loaded %s\n", Name);)
+
 		return true;
 	}
 }
@@ -83,13 +87,17 @@ static SDL_Surface* ConvertSurface(bool* Continue, bool* Error, SDL_Surface* Sou
 	if (Dest == NULL)
 	{
 		*Continue = false;  *Error = true;
-		printf("%s: SDL_ConvertSurface failed: %s\n", Name, SDL_GetError());
+
+		D(bug("%s: SDL_ConvertSurface failed: %s\n", Name, SDL_GetError());)
+
 		SDL_ClearError();
 		return NULL;
 	}
 	else
 	{
-		printf("Successfully converted %s to the screen's pixel format\n", Name);
+
+		D(bug("Successfully converted %s to the screen's pixel format\n", Name);)
+
 		SDL_FreeSurface(Source);
 		return Dest;
 	}
@@ -100,10 +108,15 @@ void Initialize(bool* Continue, bool* Error)
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0)
 	{
 		*Continue = false;  *Error = true;
-		printf("SDL initialisation failed: %s\n", SDL_GetError());
+
+		D(bug("SDL initialisation failed: %s\n", SDL_GetError());)
+
 		SDL_ClearError();
 		return;
-	} else printf("SDL initialisation succeeded\n");
+	} else 
+
+	D(bug("SDL initialisation succeeded\n");)
+
 
 	SDL_Surface* WindowIcon = LoadImage("hocoslamfy.png");
 	if (!CheckImage(Continue, Error, WindowIcon, "hocoslamfy.png"))
@@ -122,12 +135,16 @@ void Initialize(bool* Continue, bool* Error)
 	if (Screen == NULL)
 	{
 		*Continue = false;  *Error = true;
-		printf("SDL_SetVideoMode failed: %s\n", SDL_GetError());
+	
+		D(bug("SDL_SetVideoMode failed: %s\n", SDL_GetError());)
+
 		SDL_ClearError();
 		return;
 	}
 	else
-		printf("SDL_SetVideoMode succeeded\n");
+	
+		D(bug("SDL_SetVideoMode succeeded\n");)
+
 
 	SDL_ShowCursor(0);
 

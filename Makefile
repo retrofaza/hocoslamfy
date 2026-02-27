@@ -1,4 +1,4 @@
-TARGET      ?= hocoslamfy
+TARGET ?= hocoslamfy
 
 ifeq ($(TARGET), hocoslamfy-od)
   CC        := mipsel-linux-gcc
@@ -6,31 +6,33 @@ ifeq ($(TARGET), hocoslamfy-od)
   OBJS       = platform/opendingux.o
   DEFS      := -DOPK
 else
-  CC        := gcc
+  CC        := x86_64-aros-gcc
   STRIP     := strip
   OBJS       = platform/general.o
   DEFS      := 
 endif
 
 SYSROOT     := $(shell $(CC) --print-sysroot)
-SDL_CONFIG  ?= $(SYSROOT)/usr/bin/sdl-config
+SDL_CONFIG  := $(SYSROOT)/bin/sdl-config
 SDL_CFLAGS  := $(shell $(SDL_CONFIG) --cflags)
-SDL_LIBS    := $(shell $(SDL_CONFIG) --libs)
+SDL_LIBS    := $(shell $(SDL_CONFIG) --libs) -lm -lSDL_image -lSDL_mixer -ljpeg -lpng -lmikmod -lvorbisfile -lvorbis -logg
 
 OBJS        += main.o init.o title.o game.o score.o audio.o bg.o text.o unifont.o
               
 HEADERS     += main.h init.h platform.h title.h game.h score.h audio.h bg.h text.h unifont.h
 
-INCLUDE     := -I.
+INCLUDE     := -I. -I/home/rfz/AROScross/core-linux-x86_64-d/bin/linux-x86_64/AROS/Development/include/SDL
 DEFS        +=
 
 CFLAGS       = $(SDL_CFLAGS) -Wall -Wno-unused-variable \
                -O2 -fomit-frame-pointer $(DEFS) $(INCLUDE)
-LDFLAGS     := $(SDL_LIBS) -lm -lSDL_image -lSDL_mixer
+LDFLAGS     := $(SDL_LIBS) -s
 
 ifneq (, $(findstring MINGW, $(shell uname -s)))
 	CFLAGS+=-DDONT_USE_PWD
 endif
+
+CFLAGS+=-DDONT_USE_PWD
 
 include Makefile.rules
 
