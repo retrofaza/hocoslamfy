@@ -63,16 +63,12 @@ static bool CheckImage(bool* Continue, bool* Error, const SDL_Surface* Image, co
 	if (Image == NULL)
 	{
 		*Continue = false;  *Error = true;
-
-		D(bug("%s: LoadImage failed: %s\n", Name, IMG_GetError());)
-
+		printf("%s: LoadImage failed: %s\n", Name, IMG_GetError());
 		return false;
 	}
 	else
 	{
-
-		D(bug("Successfully loaded %s\n", Name);)
-
+		printf("Successfully loaded %s\n", Name);
 		return true;
 	}
 }
@@ -87,36 +83,37 @@ static SDL_Surface* ConvertSurface(bool* Continue, bool* Error, SDL_Surface* Sou
 	if (Dest == NULL)
 	{
 		*Continue = false;  *Error = true;
-
-		D(bug("%s: SDL_ConvertSurface failed: %s\n", Name, SDL_GetError());)
-
+		printf("%s: SDL_ConvertSurface failed: %s\n", Name, SDL_GetError());
 		SDL_ClearError();
 		return NULL;
 	}
 	else
 	{
-
-		D(bug("Successfully converted %s to the screen's pixel format\n", Name);)
-
+		printf("Successfully converted %s to the screen's pixel format\n", Name);
 		SDL_FreeSurface(Source);
 		return Dest;
 	}
 }
+
+SDL_Surface* ActualScreen = NULL;
+static SDL_Joystick* Stick = NULL;
 
 void Initialize(bool* Continue, bool* Error)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0)
 	{
 		*Continue = false;  *Error = true;
-
-		D(bug("SDL initialisation failed: %s\n", SDL_GetError());)
-
+		printf("SDL initialisation failed: %s\n", SDL_GetError());
 		SDL_ClearError();
 		return;
-	} else 
+	} else printf("SDL initialisation succeeded\n");
 
-	D(bug("SDL initialisation succeeded\n");)
-
+	if (SDL_NumJoysticks() > 0) {
+        	Stick = SDL_JoystickOpen(0);
+        	if (Stick) {
+            		printf("Joystick 0 successfully opened\n");
+        	}
+    	}
 
 	SDL_Surface* WindowIcon = LoadImage("hocoslamfy.png");
 	if (!CheckImage(Continue, Error, WindowIcon, "hocoslamfy.png"))
@@ -124,27 +121,19 @@ void Initialize(bool* Continue, bool* Error)
 	SDL_WM_SetIcon(WindowIcon, NULL);
 	SDL_WM_SetCaption("hocoslamfy", "hocoslamfy");
 
-	Screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE |
-#ifdef SDL_TRIPLEBUF
-		SDL_TRIPLEBUF
-#else
-		SDL_DOUBLEBUF
-#endif
-		);
 
-	if (Screen == NULL)
-	{
+	ActualScreen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+    
+	if (ActualScreen == NULL) {
 		*Continue = false;  *Error = true;
-	
-		D(bug("SDL_SetVideoMode failed: %s\n", SDL_GetError());)
-
+		printf("SDL_SetVideoMode failed: %s\n", SDL_GetError());
 		SDL_ClearError();
 		return;
 	}
-	else
-	
-		D(bug("SDL_SetVideoMode succeeded\n");)
 
+	Screen = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+
+	Screen = SDL_DisplayFormat(Screen);
 
 	SDL_ShowCursor(0);
 
@@ -222,5 +211,31 @@ void Finalize()
 	ColumnImage = NULL;
 	SDL_FreeSurface(GameOverFrame);
 	GameOverFrame = NULL;
+	if (Stick != NULL) {
+        	SDL_JoystickClose(Stick);
+        	Stick = NULL;
+    	}
 	SDL_Quit();
+}
+
+void ToggleFullscreen(void)
+{
+    static bool isFullscreen = false;
+    isFullscreen = !isFullscreen;
+
+    Uint32 flags = SDL_HWSURFACE | SDL_DOUBLEBUF;
+    int width = SCREEN_WIDTH;   // 320
+    int height = SCREEN_HEIGHT; // 240
+
+    if (isFullscreen) {
+        flags |= SDL_FULLSCREEN;
+        width = 640;
+        height = 480;
+    }
+
+    ActualScreen = SDL_SetVideoMode(width, height, 32, flags);
+    
+    if (ActualScreen == NULL) {
+        printf("Mode change error: %s\n", SDL_GetError());
+    }
 }

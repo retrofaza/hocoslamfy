@@ -30,7 +30,8 @@ typedef void (*TGatherInput) (bool* Continue);
 typedef void (*TDoLogic) (bool* Continue, bool* Error, Uint32 Milliseconds);
 typedef void (*TOutputFrame) (void);
 
-extern SDL_Surface* Screen;
+extern SDL_Surface* Screen;       // To będzie nasz bufor 320x240 (wirtualny)
+extern SDL_Surface* ActualScreen; // To będzie fizyczne okno (320x240 lub 640x480)
 extern SDL_Surface* TitleScreenFrames[TITLE_FRAME_COUNT];
 extern SDL_Surface* BackgroundImages[BG_LAYER_COUNT];
 extern SDL_Surface* CharacterFrames;

@@ -27,6 +27,8 @@
 #include "platform.h"
 #include <SDL/SDL_image.h>
 
+int __nostdiowin = 1;
+
 static bool         Continue                             = true;
 static bool         Error                                = false;
 
@@ -45,19 +47,24 @@ static bool         Error                                = false;
 
 int main(int argc, char* argv[])
 {
-	Initialize(&Continue, &Error);
-	Uint32 Duration = 16;
-	while (Continue)
-	{
-		GatherInput(&Continue);
-		if (!Continue)
-			break;
-		DoLogic(&Continue, &Error, Duration);
-		if (!Continue)
-			break;
-		OutputFrame();
-		Duration = ToNextFrame();
-	}
-	Finalize();
-	return Error ? 1 : 0;
+    Initialize(&Continue, &Error);
+    Uint32 Duration = 16;
+    while (Continue)
+    {
+        GatherInput(&Continue);
+        if (!Continue) break;
+        
+        DoLogic(&Continue, &Error, Duration);
+        if (!Continue) break;
+
+        OutputFrame(); 
+
+        SDL_SoftStretch(Screen, NULL, ActualScreen, NULL);
+
+        SDL_Flip(ActualScreen);
+
+        Duration = ToNextFrame();
+    }
+    Finalize();
+    return Error ? 1 : 0;
 }

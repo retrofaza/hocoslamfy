@@ -21,7 +21,7 @@ OBJS        += main.o init.o title.o game.o score.o audio.o bg.o text.o unifont.
               
 HEADERS     += main.h init.h platform.h title.h game.h score.h audio.h bg.h text.h unifont.h
 
-INCLUDE     := -I. -I/home/rfz/AROScross/core-linux-x86_64-d/bin/linux-x86_64/AROS/Development/include/SDL
+INCLUDE     := -I.
 DEFS        +=
 
 CFLAGS       = $(SDL_CFLAGS) -Wall -Wno-unused-variable \

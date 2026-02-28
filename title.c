@@ -61,6 +61,12 @@ void TitleScreenGatherInput(bool* Continue)
 	{
 		if (IsEnterGamePressingEvent(&ev))
 			WaitingForRelease = true;
+
+		else if (IsFullscreenToggleEvent(&ev))
+	        {
+        	    ToggleFullscreen();
+        	}
+
 		else if (IsEnterGameReleasingEvent(&ev))
 		{
 			WaitingForRelease = false;
@@ -138,8 +144,6 @@ void TitleScreenOutputFrame()
 		MIDDLE);
 	if (SDL_MUSTLOCK(Screen))
 		SDL_UnlockSurface(Screen);
-
-	SDL_Flip(Screen);
 }
 
 void ToTitleScreen(void)
@@ -148,7 +152,7 @@ void ToTitleScreen(void)
 	{
 		int Length = 2, NewLength;
 		WelcomeMessage = malloc(Length);
-		while ((NewLength = snprintf(WelcomeMessage, Length, "Press %s to play\nor %s to exit\n\nIn-game:\n%s to rise\n%s to pause\n%s to exit", GetEnterGamePrompt(), GetExitGamePrompt(), GetBoostPrompt(), GetPausePrompt(), GetExitGamePrompt())) >= Length)
+		while ((NewLength = snprintf(WelcomeMessage, Length, "Press %s to play the game\n%s turns on/off fullscreen\n%s allows you to exit\n\nIn-game:\n%s to rise\n%s to pause\n%s to exit", GetEnterGamePrompt(), GetFullscreenPrompt(), GetExitGamePrompt(), GetBoostPrompt(), GetPausePrompt(), GetExitGamePrompt())) >= Length)
 		{
 			Length = NewLength + 1;
 			WelcomeMessage = realloc(WelcomeMessage, Length);

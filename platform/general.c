@@ -42,21 +42,26 @@ Uint32 ToNextFrame(void)
 
 bool IsEnterGamePressingEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYDOWN
-	    && (event->key.keysym.sym == SDLK_RETURN
-	     || event->key.keysym.sym == SDLK_SPACE);
+	return (event->type == SDL_KEYDOWN
+		&& event->key.keysym.sym == SDLK_SPACE)
+		|| (event->type == SDL_JOYBUTTONDOWN);
 }
 
 bool IsEnterGameReleasingEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYUP
-	    && (event->key.keysym.sym == SDLK_RETURN
-	     || event->key.keysym.sym == SDLK_SPACE);
+	return (event->type == SDL_KEYUP
+		&& event->key.keysym.sym == SDLK_SPACE)
+		|| (event->type == SDL_JOYBUTTONUP);
 }
 
 const char* GetEnterGamePrompt(void)
 {
-	return "Enter/Space";
+	return "Fire/Space";
+}
+
+const char* GetFullscreenPrompt(void)
+{
+	return "Alt+Enter";
 }
 
 bool IsExitGameEvent(const SDL_Event* event)
@@ -73,13 +78,17 @@ const char* GetExitGamePrompt(void)
 
 bool IsBoostEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYDOWN
-	    && event->key.keysym.sym == SDLK_SPACE;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE)
+            return true;
+	if (event->type == SDL_JOYBUTTONDOWN)
+            return true;
+
+	return false;
 }
 
 const char* GetBoostPrompt(void)
 {
-	return "Space";
+	return "Fire/Space";
 }
 
 bool IsPauseEvent(const SDL_Event* event)
@@ -91,4 +100,11 @@ bool IsPauseEvent(const SDL_Event* event)
 const char* GetPausePrompt(void)
 {
 	return "P";
+}
+
+bool IsFullscreenToggleEvent(const SDL_Event* event)
+{
+    return event->type == SDL_KEYDOWN
+        && (event->key.keysym.sym == SDLK_RETURN
+        && event->key.keysym.mod & KMOD_ALT);
 }

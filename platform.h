@@ -40,6 +40,9 @@ Uint32 ToNextFrame(void);
 // Get???Prompt returns the text that can be used to describe the actions that
 // can trigger a feature on the platform.
 
+bool IsFullscreenToggleEvent(const SDL_Event* event);
+const char* GetFullscreenPrompt(void);
+
 bool IsEnterGamePressingEvent(const SDL_Event* event);
 bool IsEnterGameReleasingEvent(const SDL_Event* event);
 const char* GetEnterGamePrompt(void);

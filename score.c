@@ -65,6 +65,10 @@ void ScoreGatherInput(bool* Continue)
 			}
 			return;
 		}
+		else if (IsFullscreenToggleEvent(&ev))
+		{
+	   	        ToggleFullscreen();
+		}
 		else if (IsExitGameEvent(&ev))
 		{
 			*Continue = false;
@@ -116,8 +120,6 @@ void ScoreOutputFrame()
 		MIDDLE);
 	if (SDL_MUSTLOCK(Screen))
 		SDL_UnlockSurface(Screen);
-
-	SDL_Flip(Screen);
 }
 
 void ToScore(uint32_t Score, enum GameOverReason GameOverReason, uint32_t HighScore)

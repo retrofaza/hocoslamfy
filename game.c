@@ -79,6 +79,10 @@ void GameGatherInput(bool* Continue)
 			Boost = true;
 		else if (IsPauseEvent(&ev) && PlayerStatus == _ALIVE)
 			Pause = !Pause;
+		else if (IsFullscreenToggleEvent(&ev))
+      		{
+    		        ToggleFullscreen();
+     		}
 		else if (IsExitGameEvent(&ev))
 		{
 			*Continue = false;
@@ -428,8 +432,6 @@ void GameOutputFrame()
 			SDL_BlitSurface(CharacterFrames, &PlayerSourceRect, Screen, &PlayerDestRect);
 			break;
 	}
-
-	SDL_Flip(Screen);
 }
 
 void ToGame(void)

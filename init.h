@@ -22,9 +22,6 @@
 
 #include <stdbool.h>
 
-#define DEBUG 1
-#include <aros/debug.h>
-
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
 
@@ -36,5 +33,6 @@
 
 void Initialize(bool* Continue, bool* Error);
 void Finalize(void);
+void ToggleFullscreen(void);
 
 #endif /* !defined(_INIT_H_) */
