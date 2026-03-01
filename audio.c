@@ -37,41 +37,41 @@ static Mix_Chunk* SFX_HighScore = NULL;
 static Mix_Chunk* LoadSFX(const char* Path)
 {
 	Mix_Chunk* Result = Mix_LoadWAV(Path);
-	if (Result == NULL) 	
-		D(bug("%s: Mix_LoadWAV failed: %s\n", Path, Mix_GetError());)
+	if (Result == NULL)
+		printf("%s: Mix_LoadWAV failed: %s\n", Path, Mix_GetError());
 	else
-		D(bug("Successfully loaded %s\n", Path);)
+		printf("Successfully loaded %s\n", Path);
 	return Result;
 }
 
 bool InitializeAudio()
 {
-	if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2 /* stereo */, 1024 /* buffer size */))
+	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2 /* stereo */, 1024 /* buffer size */))
 	{
-		D(bug("warning: Mix_OpenAudio failed: %s\n", Mix_GetError());)
-		D(bug("Sound will not be available.\n");)
+		printf("warning: Mix_OpenAudio failed: %s\n", Mix_GetError());
+		printf("Sound will not be available.\n");
 	}
 	else
 	{
-		D(bug("Mix_OpenAudio succeeded\n");)
+		printf("Mix_OpenAudio succeeded\n");
 		SND_Available = true;
 	}
 
 	if (SND_Available)
 	{
-		BGM = Mix_LoadMUS(DATA_PATH "bgm.wav");
+		BGM = Mix_LoadMUS(DATA_PATH "bgm.ogg");
 		if (BGM == NULL)
 		{
-			D(bug("%s: Mix_LoadMUS failed: %s\n", DATA_PATH "bgm.wav", Mix_GetError());)
+			printf("%s: Mix_LoadMUS failed: %s\n", DATA_PATH "bgm.ogg", Mix_GetError());
 			return false;
 		}
 		else
-			D(bug("Successfully loaded %s\n", DATA_PATH "bgm.wav");)
+			printf("Successfully loaded %s\n", DATA_PATH "bgm.ogg");
 
 		SFX_Fly       = LoadSFX(DATA_PATH "fly.wav");
 		SFX_Pass      = LoadSFX(DATA_PATH "pass.wav");
 		SFX_Collision = LoadSFX(DATA_PATH "collision.wav");
-		SFX_HighScore = LoadSFX(DATA_PATH "highscore.wav");
+		SFX_HighScore = LoadSFX(DATA_PATH "highscore.ogg");
 	}
 
 	return true;
