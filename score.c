@@ -52,7 +52,11 @@ void ScoreGatherInput(bool* Continue)
 
 	while (SDL_PollEvent(&ev))
 	{
-		if (IsEnterGamePressingEvent(&ev))
+		if (IsToggleFPSEvent(&ev))
+		{
+    			ShowFPS = !ShowFPS;
+		}
+		else if (IsEnterGamePressingEvent(&ev))
 			WaitingForRelease = true;
 		else if (IsEnterGameReleasingEvent(&ev))
 		{

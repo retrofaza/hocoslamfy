@@ -55,3 +55,8 @@ const char* GetBoostPrompt(void);
 
 bool IsPauseEvent(const SDL_Event* event);
 const char* GetPausePrompt(void);
+
+bool IsToggleFPSEvent(const SDL_Event* event);
+
+extern bool ShowFPS;
+extern bool DisableFPSLimit;

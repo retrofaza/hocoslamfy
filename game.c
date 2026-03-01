@@ -75,7 +75,11 @@ void GameGatherInput(bool* Continue)
 
 	while (SDL_PollEvent(&ev))
 	{
-		if (IsBoostEvent(&ev) && !Pause)
+		if (IsToggleFPSEvent(&ev))
+		{
+    			ShowFPS = !ShowFPS;
+		}
+		else if (IsBoostEvent(&ev) && !Pause)
 			Boost = true;
 		else if (IsPauseEvent(&ev) && PlayerStatus == _ALIVE)
 			Pause = !Pause;

@@ -25,6 +25,8 @@
 #include "platform.h"
 
 static Uint32 LastTicks = 0;
+bool   ShowFPS = false;
+bool   DisableFPSLimit = false;
 
 void InitializePlatform(void)
 {
@@ -33,11 +35,18 @@ void InitializePlatform(void)
 
 Uint32 ToNextFrame(void)
 {
-	SDL_Delay(8);
+	if (!DisableFPSLimit) {
+	    SDL_Delay(8);
+	}
 	Uint32 Ticks = SDL_GetTicks();
 	Uint32 Duration = Ticks - LastTicks;
 	LastTicks = Ticks;
 	return Duration;
+}
+
+bool IsToggleFPSEvent(const SDL_Event* event)
+{
+    return event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_f;
 }
 
 bool IsEnterGamePressingEvent(const SDL_Event* event)

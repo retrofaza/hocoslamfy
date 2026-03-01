@@ -46,7 +46,7 @@ static Mix_Chunk* LoadSFX(const char* Path)
 
 bool InitializeAudio()
 {
-	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2 /* stereo */, 1024 /* buffer size */))
+	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2 /* stereo */, 2048 /* buffer size */))
 	{
 		printf("warning: Mix_OpenAudio failed: %s\n", Mix_GetError());
 		printf("Sound will not be available.\n");

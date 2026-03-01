@@ -59,14 +59,17 @@ void TitleScreenGatherInput(bool* Continue)
 
 	while (SDL_PollEvent(&ev))
 	{
-		if (IsEnterGamePressingEvent(&ev))
+		if (IsToggleFPSEvent(&ev))
+		{
+    			ShowFPS = !ShowFPS;
+		}	
+		else if (IsEnterGamePressingEvent(&ev))
 			WaitingForRelease = true;
 
 		else if (IsFullscreenToggleEvent(&ev))
 	        {
         	    ToggleFullscreen();
         	}
-
 		else if (IsEnterGameReleasingEvent(&ev))
 		{
 			WaitingForRelease = false;

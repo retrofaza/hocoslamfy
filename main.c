@@ -25,7 +25,14 @@
 #include "main.h"
 #include "init.h"
 #include "platform.h"
+#include "text.h"
 #include <SDL/SDL_image.h>
+
+#ifdef __AROS__
+#include <workbench/startup.h>
+#include <proto/icon.h>
+#include <proto/dos.h>
+#endif
 
 int __nostdiowin = 1;
 
@@ -44,9 +51,56 @@ static bool         Error                                = false;
        TDoLogic     DoLogic;
        TOutputFrame OutputFrame;
 
+static uint32_t FPS_Count = 0;
+static uint32_t FPS_LastTime = 0;
+static uint32_t FPS_Current = 0;
+static char FPS_Text[20] = "FPS: 0";
+
+#ifdef __AROS__
+void CheckAROSTooltypes(int argc, char* argv[])
+{
+    struct DiskObject* diskObj = NULL;
+    char* programName = NULL;
+
+    if (argc == 0) {
+        // Uruchomienie z ikony (Workbench)
+        struct WBStartup* wbs = (struct WBStartup*)argv;
+        if (wbs->sm_NumArgs > 0) {
+            BPTR oldDir = CurrentDir(wbs->sm_ArgList[0].wa_Lock);
+            diskObj = GetDiskObject(wbs->sm_ArgList[0].wa_Name);
+            CurrentDir(oldDir);
+        }
+    } else {
+        // Uruchomienie z CLI - sprawdzamy ikonę pliku binarnego
+        diskObj = GetDiskObject(argv[0]);
+    }
+
+    if (diskObj) {
+        // Szukamy "FPS-NO-LIMIT"
+        char* val = FindToolType(diskObj->do_ToolTypes, "FPS-NO-LIMIT");
+        if (val) {
+            // Jeśli Tooltype istnieje i jest ustawiony na "true" lub "yes"
+            if (MatchToolValue(val, "true") || MatchToolValue(val, "yes")) {
+                DisableFPSLimit = true;
+            }
+        }
+        FreeDiskObject(diskObj);
+    }
+}
+#endif
 
 int main(int argc, char* argv[])
 {
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--no-limit") == 0) {
+            DisableFPSLimit = true;
+        }
+    }
+
+#ifdef __AROS__
+    CheckAROSTooltypes(argc, argv);
+#endif
+
     Initialize(&Continue, &Error);
     Uint32 Duration = 16;
     while (Continue)
@@ -57,11 +111,34 @@ int main(int argc, char* argv[])
         DoLogic(&Continue, &Error, Duration);
         if (!Continue) break;
 
+	// 1. Rysowanie gry
         OutputFrame(); 
 
-        SDL_SoftStretch(Screen, NULL, ActualScreen, NULL);
+        // 2. OBLICZANIE FPS (raz na sekundę)
+        FPS_Count++;
+        uint32_t currentTime = SDL_GetTicks();
+        if (currentTime - FPS_LastTime >= 1000) {
+            FPS_Current = FPS_Count;
+            sprintf(FPS_Text, "FPS: %u", FPS_Current);
+            FPS_Count = 0;
+            FPS_LastTime = currentTime;
+        }
 
-        SDL_Flip(ActualScreen);
+	if (ShowFPS) {
+            if (SDL_MUSTLOCK(Screen)) SDL_LockSurface(Screen);
+            PrintStringOutline32(FPS_Text,
+                SDL_MapRGB(Screen->format, 255, 255, 0),
+                SDL_MapRGB(Screen->format, 0, 0, 0),
+                Screen->pixels, Screen->pitch,
+                5, 5, 150, 20, LEFT, TOP);
+            if (SDL_MUSTLOCK(Screen)) SDL_UnlockSurface(Screen);
+        }
+
+	// 4. Skalowanie i wyświetlanie na fizycznym ekranie
+        if (ActualScreen) {
+            SDL_SoftStretch(Screen, NULL, ActualScreen, NULL);
+            SDL_Flip(ActualScreen);
+        }
 
         Duration = ToNextFrame();
     }
